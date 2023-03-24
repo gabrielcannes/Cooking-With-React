@@ -8,6 +8,23 @@ const LOCAL_STORAGE_KEY = 'cookingWithReact.app.recipes'
 
 function App() {
 
+  const [selectedRecipeId, setSelectedRecipeId] = useState()
+
+  const [recipes, setRecipes] = useState(() => {
+    const recipeJSON = localStorage.getItem(LOCAL_STORAGE_KEY)
+    if (recipeJSON == null) {
+      return sampleRecipes
+    } else {
+      return JSON.parse(recipeJSON)
+    }
+  })
+
+  const selectedRecipe = recipes.find(recipe => recipe.id === selectedRecipeId)
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(recipes))
+  }, [recipes])
+
   const handleAddRecipe = () => {
     const newRecipe = {
       id: Date.now().toString(),
@@ -26,32 +43,33 @@ function App() {
     setRecipes([...recipes, newRecipe])
   }
 
+  // swapping ou one of the recipes in the array
+  const handleRecipeChange = (id, recipe) => {
+    const newRecipes = [...recipes, ]
+    const index = newRecipes.findIndex(recipe => recipe.id === id)
+    newRecipes[index] = recipe
+    setRecipes(newRecipes)
+  } 
+
   const handleDeleteRecipe = (id) => {
     return setRecipes(recipes.filter(recipe => recipe.id !== id))
   }
 
-  const recipeContextValue = {
-    handleAddRecipe,
-    handleDeleteRecipe
+  const handleRecipeSelect = (id) => {
+    setSelectedRecipeId(id)
   }
 
-  const [recipes, setRecipes] = useState(() => {
-    const recipeJSON = localStorage.getItem(LOCAL_STORAGE_KEY)
-    if (recipeJSON == null) {
-      return sampleRecipes
-    } else {
-      return JSON.parse(recipeJSON)
-    }
-  })
-
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(recipes))
-  }, [recipes])
+  const recipeContextValue = {
+    handleAddRecipe,
+    handleDeleteRecipe,
+    handleRecipeSelect,
+    handleRecipeChange
+  }
 
   return (
     <RecipeContext.Provider value={recipeContextValue}>
       <RecipeList recipes={recipes} />
-      <RecipeEdit></RecipeEdit>
+      {selectedRecipe ? <RecipeEdit recipe={selectedRecipe}></RecipeEdit> : null}
     </RecipeContext.Provider>
   )
 }
