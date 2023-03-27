@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import RecipeIngredientEdit from './RecipeIngredientEdit'
 import { RecipeContext } from './App'
 
-export default function ({ recipe }) {
+export default function RecipeEdit({ recipe }) {
 
     const { handleRecipeChange, handleRecipeSelect } = useContext(RecipeContext)
 
