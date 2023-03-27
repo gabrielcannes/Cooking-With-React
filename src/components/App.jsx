@@ -28,30 +28,34 @@ function App() {
   const handleAddRecipe = () => {
     const newRecipe = {
       id: Date.now().toString(),
-      name: 'New',
+      name: '',
       servings: 1,
-      cookTime: '1:00',
-      instructions: 'instruc',
+      cookTime: '',
+      instructions: '',
       ingredients: [
         {
           id: Date.now().toString(),
-          name: 'name',
-          amount: '1 Tbs'
+          name: '',
+          amount: ''
         }
       ]
     }
+    setSelectedRecipeId(newRecipe.id)
     setRecipes([...recipes, newRecipe])
   }
 
   // swapping ou one of the recipes in the array
   const handleRecipeChange = (id, recipe) => {
-    const newRecipes = [...recipes, ]
+    const newRecipes = [...recipes,]
     const index = newRecipes.findIndex(recipe => recipe.id === id)
     newRecipes[index] = recipe
     setRecipes(newRecipes)
-  } 
+  }
 
   const handleDeleteRecipe = (id) => {
+    if (selectedRecipeId !== null && selectedRecipeId === id) {
+      setSelectedRecipeId(null)
+    }
     return setRecipes(recipes.filter(recipe => recipe.id !== id))
   }
 

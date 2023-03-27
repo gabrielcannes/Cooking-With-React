@@ -3,7 +3,8 @@ import RecipeIngredientEdit from './RecipeIngredientEdit'
 import { RecipeContext } from './App'
 
 export default function ({ recipe }) {
-    const { handleRecipeChange } = useContext(RecipeContext)
+
+    const { handleRecipeChange, handleRecipeSelect } = useContext(RecipeContext)
 
     const handleChange = (changes) => {
         handleRecipeChange(recipe.id, { ...recipe, ...changes })
@@ -16,13 +17,28 @@ export default function ({ recipe }) {
         handleChange({ ingredients: newIngredients })
     }
 
+    const handleAddIngredient = () => {
+        const newIngredient = {
+            id: Date.now().toString(),
+            name: '',
+            amount: ''
+        }
+        handleChange({ ingredients: [...recipe.ingredients, newIngredient] })
+    }
+
+    const handleDeleteIngredient = (id) => {
+        handleChange({ ingredients: recipe.ingredients.filter(ingredient => ingredient.id !== id)})
+    } 
+
     return (
         <div
             className='recipe-edit'>
             <div
                 className='recipe-edit__remove-button-container'>
                 <button
-                    className='btn recipe-edit__remove-button'>
+                    className='btn recipe-edit__remove-button'
+                    onClick={() => { handleRecipeSelect(null) }}
+                >
                     &times;
                 </button>
             </div>
@@ -93,12 +109,18 @@ export default function ({ recipe }) {
                         key={ingredient.id}
                         ingredient={ingredient}
                         handleIngredientChange={handleIngredientChange}
+                        handleDeleteIngredient={handleDeleteIngredient}
                     >
                     </RecipeIngredientEdit>
                 ))}
             </div>
             <div className='recipe-edit__add-ingredient-button-container'>
-                <button className='btn btn--primary'>Add Ingredient</button>
+                <button
+                    className='btn btn--primary'
+                    onClick={() => { handleAddIngredient() }}
+                >
+                    Add Ingredient
+                </button>
             </div>
         </div>
     )
